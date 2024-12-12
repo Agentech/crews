@@ -1,0 +1,49 @@
+---
+analyze_document_features:
+  description: |-
+    Analyze the text to extract and identify key patterns, headers, common phrases, and structural elements that are characteristic of different types of insurance documents. Look for distinctive features such as policy numbers, claim IDs, billing codes, explanation of benefits headers, or first notice of loss indicators.
+
+    OCR Text:
+    {ocr_text}
+  expected_output: |-
+    A comprehensive list of identified document features, including:
+    - Key headers and titles
+    - Document-specific identifiers (policy numbers, claim IDs, etc.)
+    - Structural patterns
+    - Common phrases and terminology
+    - Any other distinctive elements found in {ocr_text}
+  async_execution: false
+  agent: document_analyzer
+classify_document_type:
+  description: |-
+    Based on the identified features from the OCR Text determine the specific type of insurance document (policy, claim, bill, invoice, FNOL, EOB, etc.). Consider the presence and combination of key identifiers, structural elements, and terminology specific to each document type.
+
+    OCR Text:
+    {ocr_text}
+  expected_output: |-
+    A clear classification of the document type, including:
+    - Primary document classification
+    - Secondary classification (if applicable)
+    - List of key indicators that support the classification
+    - Any notable observations about the document structure and content
+  async_execution: false
+  agent: insurance_classifier
+  context:
+  - analyze_document_features
+calculate_confidence_score:
+  description: |-
+    Evaluate the reliability of the document classification for the OCR Text by analyzing the quantity and quality of identifying features found. Calculate a confidence percentage based on the strength of the evidence supporting the classification.
+
+    OCR Text:
+     {ocr_text}
+  expected_output: |-
+    A detailed confidence assessment, including:
+    - Confidence score (percentage)
+    - List of key features that contributed to the confidence score
+    - Explanation of any factors that increased or decreased confidence
+    - Potential alternative classifications if confidence is below threshold
+  async_execution: false
+  agent: confidence_evaluator
+  context:
+  - analyze_document_features
+  - classify_document_type
